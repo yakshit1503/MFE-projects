@@ -7,6 +7,40 @@
     </p>
   </header>
 
+  <section class="host-controls">
+    <div class="controls-header">
+      <div>
+        <p class="eyebrow">Host To Remote Data</p>
+        <h2>Shell-owned shared context</h2>
+      </div>
+      <p class="controls-copy">Update these values in the shell and the remotes will render the same shared state.</p>
+    </div>
+
+    <div class="controls-grid">
+      <label>
+        <span>User</span>
+        <input [(ngModel)]="userName" (ngModelChange)="pushState()" />
+      </label>
+      <label>
+        <span>City</span>
+        <input [(ngModel)]="city" (ngModelChange)="pushState()" />
+      </label>
+      <label>
+        <span>Audience</span>
+        <input [(ngModel)]="audience" (ngModelChange)="pushState()" />
+      </label>
+      <label>
+        <span>Timeframe</span>
+        <input [(ngModel)]="timeframe" (ngModelChange)="pushState()" />
+      </label>
+    </div>
+
+    <label class="message-field">
+      <span>Shell Message</span>
+      <textarea rows="3" [(ngModel)]="message" (ngModelChange)="pushState()"></textarea>
+    </label>
+  </section>
+
   <nav class="shell-nav" aria-label="Remote applications">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Overview</a>
     <a routerLink="/eventpulse" routerLinkActive="active">EventPulse</a>

@@ -1,0 +1,15 @@
+<section class="home-card">
+  <h2>Microfrontend Overview</h2>
+  <p>
+    yakshit-chawla-portfolio is the shell. EventPulse, Clinic Connect, DocuShare, SkyFare, and StayBook stay as
+    independently editable remote apps.
+  </p>
+  <div class="grid">
+    @for (item of items; track item.path) {
+      <a class="tile" [href]="item.path">
+        <span class="label">{{ item.name }}</span>
+        <span class="meta">{{ item.description }}</span>
+      </a>
+    }
+  </div>
+</section>
