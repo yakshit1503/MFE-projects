@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { FlightBookingModel } from '../models/flight-booking.model.js';
+import { publishBookingAudit } from '../services/booking-audit.service.js';
+import { searchSkyscannerPlaces } from '../services/skyscanner.service.js';
 
 type FlightResult = {
   id: string;
@@ -23,6 +25,24 @@ const flightInventory = [
 ];
 
 export const flightRoutes = Router();
+
+flightRoutes.get('/flights/places', async (request, response) => {
+  const searchTerm = typeof request.query['searchTerm'] === 'string' ? request.query['searchTerm'].trim() : '';
+  const isDestination = request.query['isDestination'] === 'true';
+
+  if (!searchTerm || searchTerm.length < 2) {
+    response.json({ places: [] });
+    return;
+  }
+
+  try {
+    const places = await searchSkyscannerPlaces(searchTerm, isDestination);
+    response.json({ places });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unable to fetch Skyscanner places.';
+    response.json({ places: [], message });
+  }
+});
 
 flightRoutes.get('/flights/search', (request, response) => {
   const origin = normalizeCity(request.query['origin'], 'Toronto');
@@ -69,6 +89,19 @@ flightRoutes.post('/flights/bookings', async (request, response) => {
     price: Number(body.price ?? 0),
     status: 'confirmed',
     bookingReference
+  });
+
+  void publishBookingAudit({
+    bookingReference: booking.bookingReference,
+    flightId: booking.flightId,
+    airline: booking.airline,
+    origin: booking.origin,
+    destination: booking.destination,
+    passengerName: booking.passengerName,
+    passengers: booking.passengers,
+    price: booking.price,
+    status: booking.status,
+    source: 'skyfare-node-backend'
   });
 
   response.status(201).json({ booking });

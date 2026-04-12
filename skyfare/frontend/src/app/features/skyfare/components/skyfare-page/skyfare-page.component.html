@@ -2,10 +2,10 @@
   <div class="hero">
     <div>
       <p class="eyebrow">SkyFare</p>
-      <h2>Find a smarter flight in seconds.</h2>
+      <h2>Search flights across major cities and airports.</h2>
       <p class="intro">
-        A Skyscanner-inspired flight demo owned by the SkyFare remote. Search results and dummy bookings render inside
-        the portfolio shell, while booking writes go to SkyFare MongoDB.
+        A Skyscanner-inspired flight demo owned by the SkyFare remote. Type a city or airport, compare smart dummy fares,
+        and confirm a booking that writes through the SkyFare API.
       </p>
     </div>
 
@@ -16,21 +16,63 @@
   </div>
 
   <form class="search-panel" (ngSubmit)="searchFlights()">
+    <div class="trip-tabs" aria-label="Trip type">
+      <button class="active" type="button">Round trip</button>
+      <button type="button">One way</button>
+      <button type="button">Multi-city</button>
+    </div>
+
     <label>
       <span>From</span>
-      <select name="origin" [(ngModel)]="origin">
-        @for (airport of airports; track airport.code) {
-          <option [value]="airport.city">{{ airport.city }} ({{ airport.code }}) - {{ airport.name }}</option>
+      <div class="airport-combobox">
+        <input
+          name="origin"
+          [ngModel]="originQuery"
+          (ngModelChange)="onAirportQueryChange('origin', $event)"
+          (focus)="openAirportPanel('origin')"
+          (blur)="closeAirportPanel()"
+          autocomplete="off"
+          placeholder="City or airport"
+        />
+        @if (activeAirportField() === 'origin') {
+          <div class="airport-suggestions" role="listbox" aria-label="Origin airport suggestions">
+            @for (airport of originSuggestions(); track airport.entityId) {
+              <button type="button" role="option" (mousedown)="$event.preventDefault()" (click)="selectAirport('origin', airport)">
+                <strong>{{ airport.cityName || airport.name }} <span>{{ airport.iataCode }}</span></strong>
+                <small>{{ airport.name }} · {{ airport.countryName }}</small>
+              </button>
+            } @empty {
+              <p>{{ originLookupMessage() }}</p>
+            }
+          </div>
         }
-      </select>
+      </div>
     </label>
     <label>
       <span>To</span>
-      <select name="destination" [(ngModel)]="destination">
-        @for (airport of airports; track airport.code) {
-          <option [value]="airport.city">{{ airport.city }} ({{ airport.code }}) - {{ airport.name }}</option>
+      <div class="airport-combobox">
+        <input
+          name="destination"
+          [ngModel]="destinationQuery"
+          (ngModelChange)="onAirportQueryChange('destination', $event)"
+          (focus)="openAirportPanel('destination')"
+          (blur)="closeAirportPanel()"
+          autocomplete="off"
+          placeholder="City or airport"
+        />
+        @if (activeAirportField() === 'destination') {
+          <div class="airport-suggestions" role="listbox" aria-label="Destination airport suggestions">
+            @for (airport of destinationSuggestions(); track airport.entityId) {
+              <button type="button" role="option" (mousedown)="$event.preventDefault()" (click)="selectAirport('destination', airport)">
+                <strong>{{ airport.cityName || airport.name }} <span>{{ airport.iataCode }}</span></strong>
+                <small>{{ airport.name }} · {{ airport.countryName }}</small>
+              </button>
+            } @empty {
+              <p>{{ destinationLookupMessage() }}</p>
+            }
+          </div>
         }
-      </select>
+      </div>
     </label>
     <label>
       <span>Depart</span>
@@ -50,7 +92,7 @@
   </form>
 
   @if (errorMessage()) {
-    <p class="error">{{ errorMessage() }}</p>
+  <p class="error">{{ errorMessage() }}</p>
   }
 
   <div class="content-grid">
@@ -61,35 +103,35 @@
       </div>
 
       @for (flight of results(); track flight.id) {
-        <article class="flight-card">
-          <div class="flight-score">{{ flight.score }}</div>
-          <div>
-            <strong>{{ flight.departureTime }}</strong>
-            <span>{{ flight.origin }}</span>
-          </div>
-          <div class="route-line" aria-hidden="true">
-            <span></span>
-          </div>
-          <div>
-            <strong>{{ flight.arrivalTime }}</strong>
-            <span>{{ flight.destination }}</span>
-          </div>
-          <div>
-            <strong>{{ flight.airline }}</strong>
-            <span>{{ flight.duration }} · {{ flight.stops }}</span>
-          </div>
-          <div class="price-block">
-            <strong>${{ flight.price }}</strong>
-            <span>total</span>
-          </div>
-          <button type="button" (click)="openBooking(flight)" [disabled]="isLoading()">Book</button>
-        </article>
+      <article class="flight-card">
+        <div class="flight-score">{{ flight.score }}</div>
+        <div>
+          <strong>{{ flight.departureTime }}</strong>
+          <span>{{ flight.origin }}</span>
+        </div>
+        <div class="route-line" aria-hidden="true">
+          <span></span>
+        </div>
+        <div>
+          <strong>{{ flight.arrivalTime }}</strong>
+          <span>{{ flight.destination }}</span>
+        </div>
+        <div>
+          <strong>{{ flight.airline }}</strong>
+          <span>{{ flight.duration }} · {{ flight.stops }}</span>
+        </div>
+        <div class="price-block">
+          <strong>${{ flight.price }}</strong>
+          <span>total</span>
+        </div>
+        <button type="button" (click)="openBooking(flight)" [disabled]="isLoading()">Book</button>
+      </article>
       }
     </section>
 
     <aside class="insights">
       <p class="eyebrow">Trip intelligence</p>
-      <h3>Why this feels like a travel product</h3>
+      <h3>Why this feels like a travel product?</h3>
       <ul>
         <li>Search state lives in SkyFare, not the shell.</li>
         <li>Bookings post to the SkyFare backend and persist in MongoDB.</li>
@@ -99,42 +141,44 @@
   </div>
 
   @if (selectedFlight(); as flight) {
-    <div class="modal-backdrop" role="presentation" (click)="closeBooking()">
-      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title" (click)="$event.stopPropagation()">
-        @if (latestBooking(); as booking) {
-          <div class="success-state">
-            <span class="success-mark" aria-hidden="true">✓</span>
-            <p class="eyebrow">Booking confirmed</p>
-            <h3 id="booking-title">{{ booking.bookingReference }}</h3>
-            <p>{{ booking.passengerName }} is booked on {{ booking.airline }} from {{ booking.origin }} to {{ booking.destination }}.</p>
-            <button type="button" (click)="closeBooking()">Done</button>
-          </div>
-        } @else {
-          <button class="modal-close" type="button" aria-label="Close booking modal" (click)="closeBooking()">×</button>
-          <p class="eyebrow">Confirm booking</p>
-          <h3 id="booking-title">{{ flight.airline }} · {{ flight.origin }} to {{ flight.destination }}</h3>
-          <div class="modal-summary">
-            <span>{{ flight.departureDate }}</span>
-            <span>{{ flight.departureTime }} - {{ flight.arrivalTime }}</span>
-            <span>{{ flight.duration }} · {{ flight.stops }}</span>
-            <strong>${{ flight.price }}</strong>
-          </div>
-          <label>
-            <span>Passenger name</span>
-            <input name="modalPassengerName" [(ngModel)]="passengerName" autocomplete="name" />
-          </label>
-          <label>
-            <span>Passengers</span>
-            <input name="modalPassengers" type="number" min="1" max="9" [(ngModel)]="passengers" />
-          </label>
-          @if (errorMessage()) {
-            <p class="error">{{ errorMessage() }}</p>
-          }
-          <button type="button" (click)="confirmBooking()" [disabled]="isLoading()">
-            {{ isLoading() ? 'Confirming...' : 'Confirm booking' }}
-          </button>
-        }
-      </section>
-    </div>
+  <div class="modal-backdrop" role="presentation" (click)="closeBooking()">
+    <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title"
+      (click)="$event.stopPropagation()">
+      @if (latestBooking(); as booking) {
+      <div class="success-state">
+        <span class="success-mark" aria-hidden="true">✓</span>
+        <p class="eyebrow">Booking confirmed</p>
+        <h3 id="booking-title">{{ booking.bookingReference }}</h3>
+        <p>{{ booking.passengerName }} is booked on {{ booking.airline }} from {{ booking.origin }} to {{
+          booking.destination }}.</p>
+        <button type="button" (click)="closeBooking()">Done</button>
+      </div>
+      } @else {
+      <button class="modal-close" type="button" aria-label="Close booking modal" (click)="closeBooking()">×</button>
+      <p class="eyebrow">Confirm booking</p>
+      <h3 id="booking-title">{{ flight.airline }} · {{ flight.origin }} to {{ flight.destination }}</h3>
+      <div class="modal-summary">
+        <span>{{ flight.departureDate }}</span>
+        <span>{{ flight.departureTime }} - {{ flight.arrivalTime }}</span>
+        <span>{{ flight.duration }} · {{ flight.stops }}</span>
+        <strong>${{ flight.price }}</strong>
+      </div>
+      <label>
+        <span>Passenger name</span>
+        <input name="modalPassengerName" [(ngModel)]="passengerName" autocomplete="name" />
+      </label>
+      <label>
+        <span>Passengers</span>
+        <input name="modalPassengers" type="number" min="1" max="9" [(ngModel)]="passengers" />
+      </label>
+      @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+      }
+      <button type="button" (click)="confirmBooking()" [disabled]="isLoading()">
+        {{ isLoading() ? 'Confirming...' : 'Confirm booking' }}
+      </button>
+      }
+    </section>
+  </div>
   }
 </section>

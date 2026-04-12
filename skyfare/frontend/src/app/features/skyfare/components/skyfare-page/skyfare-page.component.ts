@@ -22,36 +22,17 @@ type FlightBooking = FlightResult & {
   status: 'confirmed';
 };
 
+type AirportOption = {
+  entityId: string;
+  iataCode: string;
+  name: string;
+  cityName: string;
+  countryName: string;
+  type: string;
+  hierarchy: string;
+};
+
 const API_BASE_URL = 'http://localhost:4300/api';
-const MAJOR_AIRPORTS = [
-  { city: 'Toronto', code: 'YYZ', name: 'Toronto Pearson International' },
-  { city: 'Vancouver', code: 'YVR', name: 'Vancouver International' },
-  { city: 'Montreal', code: 'YUL', name: 'Montreal-Trudeau International' },
-  { city: 'Calgary', code: 'YYC', name: 'Calgary International' },
-  { city: 'Ottawa', code: 'YOW', name: 'Ottawa International' },
-  { city: 'New York', code: 'JFK', name: 'John F. Kennedy International' },
-  { city: 'Newark', code: 'EWR', name: 'Newark Liberty International' },
-  { city: 'Chicago', code: 'ORD', name: "Chicago O'Hare International" },
-  { city: 'Los Angeles', code: 'LAX', name: 'Los Angeles International' },
-  { city: 'San Francisco', code: 'SFO', name: 'San Francisco International' },
-  { city: 'Seattle', code: 'SEA', name: 'Seattle-Tacoma International' },
-  { city: 'Miami', code: 'MIA', name: 'Miami International' },
-  { city: 'Dallas', code: 'DFW', name: 'Dallas Fort Worth International' },
-  { city: 'Atlanta', code: 'ATL', name: 'Hartsfield-Jackson Atlanta International' },
-  { city: 'Denver', code: 'DEN', name: 'Denver International' },
-  { city: 'London', code: 'LHR', name: 'Heathrow' },
-  { city: 'Paris', code: 'CDG', name: 'Charles de Gaulle' },
-  { city: 'Amsterdam', code: 'AMS', name: 'Amsterdam Schiphol' },
-  { city: 'Frankfurt', code: 'FRA', name: 'Frankfurt Airport' },
-  { city: 'Dubai', code: 'DXB', name: 'Dubai International' },
-  { city: 'Doha', code: 'DOH', name: 'Hamad International' },
-  { city: 'Delhi', code: 'DEL', name: 'Indira Gandhi International' },
-  { city: 'Mumbai', code: 'BOM', name: 'Chhatrapati Shivaji Maharaj International' },
-  { city: 'Singapore', code: 'SIN', name: 'Singapore Changi' },
-  { city: 'Tokyo', code: 'HND', name: 'Tokyo Haneda' },
-  { city: 'Hong Kong', code: 'HKG', name: 'Hong Kong International' },
-  { city: 'Sydney', code: 'SYD', name: 'Sydney Kingsford Smith' }
-] as const;
 
 @Component({
   selector: 'app-skyfare-page',
@@ -63,10 +44,16 @@ const MAJOR_AIRPORTS = [
 export class SkyfarePageComponent {
   protected origin = 'Toronto';
   protected destination = 'Vancouver';
-  protected readonly airports = MAJOR_AIRPORTS;
+  protected originQuery = 'Toronto';
+  protected destinationQuery = 'Vancouver';
+  protected readonly originSuggestions = signal<AirportOption[]>([]);
+  protected readonly destinationSuggestions = signal<AirportOption[]>([]);
+  protected readonly originLookupMessage = signal('Click or type at least 2 characters to search Skyscanner places.');
+  protected readonly destinationLookupMessage = signal('Click or type at least 2 characters to search Skyscanner places.');
+  protected readonly activeAirportField = signal<'origin' | 'destination' | null>(null);
   protected departureDate = new Date().toISOString().slice(0, 10);
   protected passengers = 1;
-  protected passengerName = 'Yakshit Chawla';
+  protected passengerName = 'John Doe';
   protected readonly results = signal<FlightResult[]>([]);
   protected readonly latestBooking = signal<FlightBooking | null>(null);
   protected readonly selectedFlight = signal<FlightResult | null>(null);
@@ -78,6 +65,7 @@ export class SkyfarePageComponent {
   }
 
   protected async searchFlights(): Promise<void> {
+    this.syncAirportSearchValues();
     this.isLoading.set(true);
     this.errorMessage.set('');
 
@@ -146,6 +134,109 @@ export class SkyfarePageComponent {
       this.errorMessage.set(error instanceof Error ? error.message : 'Booking failed.');
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  protected onAirportQueryChange(field: 'origin' | 'destination', value: string): void {
+    if (field === 'origin') {
+      this.originQuery = value;
+      this.origin = this.parseAirportValue(value, this.originSuggestions());
+    } else {
+      this.destinationQuery = value;
+      this.destination = this.parseAirportValue(value, this.destinationSuggestions());
+    }
+
+    this.activeAirportField.set(field);
+    void this.loadAirportSuggestions(field, value);
+  }
+
+  protected openAirportPanel(field: 'origin' | 'destination'): void {
+    this.activeAirportField.set(field);
+    void this.loadAirportSuggestions(field, field === 'origin' ? this.originQuery : this.destinationQuery);
+  }
+
+  protected selectAirport(field: 'origin' | 'destination', airport: AirportOption): void {
+    const label = this.formatAirport(airport);
+
+    if (field === 'origin') {
+      this.originQuery = label;
+      this.origin = airport.cityName || airport.name;
+    } else {
+      this.destinationQuery = label;
+      this.destination = airport.cityName || airport.name;
+    }
+
+    this.activeAirportField.set(null);
+  }
+
+  protected closeAirportPanel(): void {
+    setTimeout(() => this.activeAirportField.set(null), 120);
+  }
+
+  private syncAirportSearchValues(): void {
+    this.origin = this.parseAirportValue(this.originQuery, this.originSuggestions());
+    this.destination = this.parseAirportValue(this.destinationQuery, this.destinationSuggestions());
+  }
+
+  private formatAirport(airport: AirportOption): string {
+    const code = airport.iataCode ? ` (${airport.iataCode})` : '';
+    return `${airport.cityName || airport.name}${code}`;
+  }
+
+  private parseAirportValue(value: string, suggestions: AirportOption[]): string {
+    const trimmedValue = value.trim();
+    const airport = suggestions.find((option) => this.formatAirport(option).toLowerCase() === trimmedValue.toLowerCase());
+
+    return airport?.cityName || airport?.name || trimmedValue;
+  }
+
+  private async loadAirportSuggestions(field: 'origin' | 'destination', query: string): Promise<void> {
+    const normalizedQuery = query.trim();
+
+    if (normalizedQuery.length < 2) {
+      this.setAirportSuggestions(field, []);
+      this.setAirportLookupMessage(field, 'Type at least 2 characters to search Skyscanner places.');
+      return;
+    }
+
+    try {
+      this.setAirportLookupMessage(field, 'Searching Skyscanner places...');
+      const params = new URLSearchParams({
+        searchTerm: normalizedQuery,
+        isDestination: String(field === 'destination')
+      });
+      const response = await fetch(`${API_BASE_URL}/flights/places?${params.toString()}`);
+
+      if (!response.ok) {
+        const data = (await response.json().catch(() => ({}))) as { message?: string };
+        throw new Error(data.message ?? 'Unable to fetch airport suggestions.');
+      }
+
+      const data = (await response.json()) as { places: AirportOption[]; message?: string };
+      this.setAirportSuggestions(field, data.places);
+      this.setAirportLookupMessage(
+        field,
+        data.places.length ? '' : data.message ?? 'No Skyscanner places found. Try a city or airport code.'
+      );
+    } catch {
+      this.setAirportSuggestions(field, []);
+      this.setAirportLookupMessage(field, 'Skyscanner lookup is unavailable. Add SKYSCANNER_API_KEY in the SkyFare backend .env.');
+    }
+  }
+
+  private setAirportSuggestions(field: 'origin' | 'destination', places: AirportOption[]): void {
+    if (field === 'origin') {
+      this.originSuggestions.set(places);
+    } else {
+      this.destinationSuggestions.set(places);
+    }
+  }
+
+  private setAirportLookupMessage(field: 'origin' | 'destination', message: string): void {
+    if (field === 'origin') {
+      this.originLookupMessage.set(message);
+    } else {
+      this.destinationLookupMessage.set(message);
     }
   }
 }
