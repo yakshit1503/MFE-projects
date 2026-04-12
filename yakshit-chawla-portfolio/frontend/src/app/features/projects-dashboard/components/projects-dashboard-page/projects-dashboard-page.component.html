@@ -1,0 +1,17 @@
+<section class="projects-dashboard">
+  <p class="eyebrow">Authorized Projects</p>
+  <h1>{{ session()?.label }} workspace</h1>
+  <p class="lede">
+    Choose an app below. The UI loads inside yakshit-chawla-portfolio, while feature code still lives in each remote
+    codebase.
+  </p>
+
+  <div class="project-grid">
+    @for (project of projects(); track project.key) {
+      <a [routerLink]="project.route" class="project-card">
+        <span>{{ project.name }}</span>
+        <p>{{ project.description }}</p>
+      </a>
+    }
+  </div>
+</section>

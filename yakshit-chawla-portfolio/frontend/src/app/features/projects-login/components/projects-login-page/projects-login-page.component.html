@@ -1,0 +1,43 @@
+<section class="login-shell">
+  <div class="login-card">
+    <p class="eyebrow">Protected Projects</p>
+    <h1>Login to view microfrontend projects</h1>
+    <p class="lede">
+      Admin can access every remote app. Project users can only open their assigned remote through the shell.
+    </p>
+
+    <form (ngSubmit)="login()" class="login-form">
+      <label>
+        <span>Username</span>
+        <input name="username" [(ngModel)]="username" autocomplete="username" />
+      </label>
+      <label>
+        <span>Password</span>
+        <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" />
+      </label>
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
+      <button type="submit">Enter Projects</button>
+    </form>
+  </div>
+
+  <aside class="credential-rail" aria-label="Demo login credentials">
+    <p class="eyebrow">Demo Credentials</p>
+    <h2>Access Matrix</h2>
+    @for (credential of credentials; track credential.username) {
+      <article
+        role="button"
+        tabindex="0"
+        (click)="fillCredential(credential.username, credential.password)"
+        (keydown.enter)="fillCredential(credential.username, credential.password)"
+        (keydown.space)="fillCredential(credential.username, credential.password)"
+      >
+        <strong>{{ credential.label }}</strong>
+        <span>Username: {{ credential.username }}</span>
+        <span>Password: {{ credential.password }}</span>
+        <small>Access: {{ credential.access === 'all' ? 'All apps' : credential.access.join(', ') }}</small>
+      </article>
+    }
+  </aside>
+</section>

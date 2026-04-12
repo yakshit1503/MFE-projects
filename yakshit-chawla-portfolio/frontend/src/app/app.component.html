@@ -1,56 +1,21 @@
-<div class="shell-layout">
-  <header class="hero">
-    <p class="eyebrow">Shell Application</p>
-    <h1>Yakshit Chawla Portfolio</h1>
-    <p class="summary">
-      A host dashboard for independently deployed Angular microfrontends, prepared for a future MEAN and AWS rollout.
-    </p>
+<div class="portfolio-shell">
+  <header class="topbar">
+    <a class="brand" routerLink="/">Yakshit Chawla</a>
+    <nav aria-label="Primary navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a [routerLink]="projectsLink()" routerLinkActive="active">Projects</a>
+    </nav>
+    <div class="session-area">
+      @if (session(); as activeSession) {
+        <span>{{ activeSession.label }}</span>
+        <button type="button" (click)="logout()">Logout</button>
+      } @else {
+        <a routerLink="/projects">Login</a>
+      }
+    </div>
   </header>
 
-  <section class="host-controls">
-    <div class="controls-header">
-      <div>
-        <p class="eyebrow">Host To Remote Data</p>
-        <h2>Shell-owned shared context</h2>
-      </div>
-      <p class="controls-copy">Update these values in the shell and the remotes will render the same shared state.</p>
-    </div>
-
-    <div class="controls-grid">
-      <label>
-        <span>User</span>
-        <input [(ngModel)]="userName" (ngModelChange)="pushState()" />
-      </label>
-      <label>
-        <span>City</span>
-        <input [(ngModel)]="city" (ngModelChange)="pushState()" />
-      </label>
-      <label>
-        <span>Audience</span>
-        <input [(ngModel)]="audience" (ngModelChange)="pushState()" />
-      </label>
-      <label>
-        <span>Timeframe</span>
-        <input [(ngModel)]="timeframe" (ngModelChange)="pushState()" />
-      </label>
-    </div>
-
-    <label class="message-field">
-      <span>Shell Message</span>
-      <textarea rows="3" [(ngModel)]="message" (ngModelChange)="pushState()"></textarea>
-    </label>
-  </section>
-
-  <nav class="shell-nav" aria-label="Remote applications">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Overview</a>
-    <a routerLink="/eventpulse" routerLinkActive="active">EventPulse</a>
-    <a routerLink="/clinic-connect" routerLinkActive="active">Clinic Connect</a>
-    <a routerLink="/docushare" routerLinkActive="active">DocuShare</a>
-    <a routerLink="/skyfare" routerLinkActive="active">SkyFare</a>
-    <a routerLink="/staybook" routerLinkActive="active">StayBook</a>
-  </nav>
-
-  <main class="shell-main">
+  <main class="page-stage">
     <router-outlet />
   </main>
 </div>
