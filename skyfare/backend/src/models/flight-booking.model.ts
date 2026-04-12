@@ -33,4 +33,4 @@ const flightBookingSchema = new Schema<FlightBooking>(
   { timestamps: true }
 );
 
-export const FlightBookingModel = model<FlightBooking>('FlightBooking', flightBookingSchema);
+export const FlightBookingModel = model<FlightBooking>('FlightBooking', flightBookingSchema, 'skyfare_uat');

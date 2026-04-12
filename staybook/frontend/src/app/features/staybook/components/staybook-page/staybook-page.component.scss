@@ -1,18 +1,41 @@
 :host {
   display: block;
   font-family: "Bahnschrift", "Aptos", "Trebuchet MS", sans-serif;
+  --page-border: rgba(251, 146, 60, 0.24);
+  --page-bg: radial-gradient(circle at 88% 8%, rgba(251, 146, 60, 0.34), transparent 18rem), linear-gradient(145deg, #3b1b08 0%, #6f3110 56%, #a44c1d 100%);
+  --page-text: #ffe7d2;
+  --page-shadow: 0 24px 70px rgba(154, 52, 18, 0.26);
+  --badge-bg: #fb923c;
+  --badge-text: #3b1b08;
+  --paragraph-text: #ffd9c4;
+  --card-bg: rgba(35, 10, 2, 0.82);
+  --card-border: rgba(251, 146, 60, 0.14);
+  --card-shadow: 0 16px 40px rgba(251, 146, 60, 0.2);
+  --heading-text: #ffe8d6;
+}
+
+:host-context(html[data-theme="light"]) {
+  --page-border: rgba(194, 65, 12, 0.22);
+  --page-bg: radial-gradient(circle at 88% 8%, rgba(251, 146, 60, 0.34), transparent 18rem), linear-gradient(145deg, #fff7ed 0%, #ffedd5 56%, #fed7aa 100%);
+  --page-text: #431407;
+  --page-shadow: 0 24px 70px rgba(154, 52, 18, 0.16);
+  --badge-bg: #c2410c;
+  --badge-text: #ffffff;
+  --paragraph-text: #7c2d12;
+  --card-bg: rgba(255, 255, 255, 0.78);
+  --card-border: rgba(194, 65, 12, 0.14);
+  --card-shadow: 0 16px 40px rgba(154, 52, 18, 0.1);
+  --heading-text: #431407;
 }
 
 .remote-page {
   display: grid;
   gap: 1.1rem;
   padding: clamp(1.2rem, 4vw, 2.5rem);
-  border: 1px solid rgba(194, 65, 12, 0.22);
+  border: 1px solid var(--page-border);
   border-radius: 2rem;
-  background:
-    radial-gradient(circle at 88% 8%, rgba(251, 146, 60, 0.34), transparent 18rem),
-    linear-gradient(145deg, #fff7ed 0%, #ffedd5 56%, #fed7aa 100%);
-  color: #431407;
+  background: var(--page-bg);
+  color: var(--page-text);
   box-shadow: 0 24px 70px rgba(154, 52, 18, 0.16);
 }
 
@@ -20,8 +43,8 @@
   justify-self: start;
   padding: 0.45rem 0.75rem;
   border-radius: 999px;
-  background: #c2410c;
-  color: #ffffff;
+  background: var(--badge-bg);
+  color: var(--badge-text);
   font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -30,7 +53,7 @@
 
 h2 {
   margin: 0;
-  color: #431407;
+  color: var(--heading-text);
   font-size: clamp(2.2rem, 5vw, 4.5rem);
   letter-spacing: -0.06em;
   line-height: 0.95;
@@ -40,16 +63,16 @@ h2 {
 .host-state p,
 article p,
 dd {
-  color: #7c2d12;
+  color: var(--paragraph-text);
   line-height: 1.65;
 }
 
 .host-state,
 .grid article {
   padding: 1.2rem;
-  border: 1px solid rgba(194, 65, 12, 0.14);
+  border: 1px solid var(--card-border);
   border-radius: 1.4rem;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--card-bg);
   box-shadow: 0 16px 40px rgba(154, 52, 18, 0.1);
 }
 

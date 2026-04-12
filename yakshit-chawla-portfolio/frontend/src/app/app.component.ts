@@ -1,6 +1,5 @@
 import { Component, ViewEncapsulation, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from './shared/auth/auth.service';
 import { ShellStateService } from './shared/state/shell-state.service';
@@ -10,7 +9,7 @@ const THEME_KEY = 'yakshit-portfolio-theme';
 
 @Component({
   selector: 'app-root',
-  imports: [MatButtonModule, MatSlideToggleModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [MatButtonModule, RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   encapsulation: ViewEncapsulation.Emulated
@@ -55,6 +54,7 @@ export class App {
     this.theme.set(theme);
     this.applyTheme(theme);
     localStorage.setItem(THEME_KEY, theme);
+    this.pushState();
   }
 
   protected pushState(): void {
@@ -64,7 +64,8 @@ export class App {
       audience: this.audience,
       timeframe: this.timeframe,
       userName: this.userName,
-      message: this.message
+      message: this.message,
+      theme: this.theme()
     });
   }
 

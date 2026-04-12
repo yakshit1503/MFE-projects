@@ -5,4 +5,5 @@ export interface ShellSharedState {
   timeframe: string;
   userName: string;
   message: string;
+  theme: 'light' | 'dark';
 }

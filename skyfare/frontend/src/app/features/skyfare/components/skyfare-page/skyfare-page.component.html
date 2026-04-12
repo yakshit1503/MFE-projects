@@ -10,19 +10,27 @@
     </div>
 
     <aside class="shell-card">
-      <span>Host context</span>
-      <p>{{ summary() }}</p>
+      <span>Live booking demo</span>
+      <p>Search a route, choose a fare, and confirm a sample booking that persists through the SkyFare API.</p>
     </aside>
   </div>
 
   <form class="search-panel" (ngSubmit)="searchFlights()">
     <label>
       <span>From</span>
-      <input name="origin" [(ngModel)]="origin" autocomplete="off" />
+      <select name="origin" [(ngModel)]="origin">
+        @for (airport of airports; track airport.code) {
+          <option [value]="airport.city">{{ airport.city }} ({{ airport.code }}) - {{ airport.name }}</option>
+        }
+      </select>
     </label>
     <label>
       <span>To</span>
-      <input name="destination" [(ngModel)]="destination" autocomplete="off" />
+      <select name="destination" [(ngModel)]="destination">
+        @for (airport of airports; track airport.code) {
+          <option [value]="airport.city">{{ airport.city }} ({{ airport.code }}) - {{ airport.name }}</option>
+        }
+      </select>
     </label>
     <label>
       <span>Depart</span>
@@ -43,14 +51,6 @@
 
   @if (errorMessage()) {
     <p class="error">{{ errorMessage() }}</p>
-  }
-
-  @if (latestBooking(); as booking) {
-    <article class="booking-banner">
-      <span>Booking confirmed</span>
-      <strong>{{ booking.bookingReference }}</strong>
-      <p>{{ booking.passengerName }} is booked on {{ booking.airline }} from {{ booking.origin }} to {{ booking.destination }}.</p>
-    </article>
   }
 
   <div class="content-grid">
@@ -82,7 +82,7 @@
             <strong>${{ flight.price }}</strong>
             <span>total</span>
           </div>
-          <button type="button" (click)="bookFlight(flight)" [disabled]="isLoading()">Book</button>
+          <button type="button" (click)="openBooking(flight)" [disabled]="isLoading()">Book</button>
         </article>
       }
     </section>
@@ -97,4 +97,44 @@
       </ul>
     </aside>
   </div>
+
+  @if (selectedFlight(); as flight) {
+    <div class="modal-backdrop" role="presentation" (click)="closeBooking()">
+      <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title" (click)="$event.stopPropagation()">
+        @if (latestBooking(); as booking) {
+          <div class="success-state">
+            <span class="success-mark" aria-hidden="true">✓</span>
+            <p class="eyebrow">Booking confirmed</p>
+            <h3 id="booking-title">{{ booking.bookingReference }}</h3>
+            <p>{{ booking.passengerName }} is booked on {{ booking.airline }} from {{ booking.origin }} to {{ booking.destination }}.</p>
+            <button type="button" (click)="closeBooking()">Done</button>
+          </div>
+        } @else {
+          <button class="modal-close" type="button" aria-label="Close booking modal" (click)="closeBooking()">×</button>
+          <p class="eyebrow">Confirm booking</p>
+          <h3 id="booking-title">{{ flight.airline }} · {{ flight.origin }} to {{ flight.destination }}</h3>
+          <div class="modal-summary">
+            <span>{{ flight.departureDate }}</span>
+            <span>{{ flight.departureTime }} - {{ flight.arrivalTime }}</span>
+            <span>{{ flight.duration }} · {{ flight.stops }}</span>
+            <strong>${{ flight.price }}</strong>
+          </div>
+          <label>
+            <span>Passenger name</span>
+            <input name="modalPassengerName" [(ngModel)]="passengerName" autocomplete="name" />
+          </label>
+          <label>
+            <span>Passengers</span>
+            <input name="modalPassengers" type="number" min="1" max="9" [(ngModel)]="passengers" />
+          </label>
+          @if (errorMessage()) {
+            <p class="error">{{ errorMessage() }}</p>
+          }
+          <button type="button" (click)="confirmBooking()" [disabled]="isLoading()">
+            {{ isLoading() ? 'Confirming...' : 'Confirm booking' }}
+          </button>
+        }
+      </section>
+    </div>
+  }
 </section>

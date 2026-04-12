@@ -1,4 +1,4 @@
-import { cp, mkdir, writeFile } from 'node:fs/promises';
+import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -39,6 +39,7 @@ await mkdir(join(shellPublic, 'remotes'), { recursive: true });
 
 for (const remote of remotes) {
   const target = join(shellPublic, 'remotes', remote.publicPath);
+  await rm(target, { recursive: true, force: true });
   await mkdir(target, { recursive: true });
   await cp(remote.distPath, target, { recursive: true, force: true });
   manifest[remote.manifestKey] = `/remotes/${remote.publicPath}/remoteEntry.json`;

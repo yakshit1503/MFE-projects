@@ -6,14 +6,19 @@
       <a mat-button [routerLink]="projectsLink()" routerLinkActive="active">Projects</a>
     </nav>
     <div class="session-area">
-      <mat-slide-toggle
+      <button
         class="theme-toggle"
+        type="button"
+        role="switch"
         aria-label="Theme"
-        [checked]="theme() === 'dark'"
-        (change)="setTheme($event.checked ? 'dark' : 'light')"
+        [attr.aria-checked]="theme() === 'dark'"
+        (click)="setTheme(theme() === 'dark' ? 'light' : 'dark')"
       >
-        {{ theme() === 'dark' ? 'Dark' : 'Light' }}
-      </mat-slide-toggle>
+        <span class="theme-track" aria-hidden="true">
+          <span class="theme-thumb"></span>
+        </span>
+        <span class="theme-label">{{ theme() === 'dark' ? 'Dark' : 'Light' }}</span>
+      </button>
       @if (session(); as activeSession) {
         <span>{{ activeSession.label }}</span>
         <button mat-flat-button type="button" (click)="logout()">Logout</button>

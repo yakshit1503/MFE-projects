@@ -3,21 +3,21 @@ frontend:
   phases:
     preBuild:
       commands:
-        - cd eventpulse && npm ci && cd ..
-        - cd clinic-connect && npm ci && cd ..
-        - cd docushare && npm ci && cd ..
-        - cd skyfare && npm ci && cd ..
-        - cd staybook && npm ci && cd ..
-        - cd yakshit-chawla-portfolio && npm ci && cd ..
+        - "cd eventpulse && npm ci && cd .."
+        - "cd clinic-connect && npm ci && cd .."
+        - "cd docushare && npm ci && cd .."
+        - "cd skyfare && npm ci && cd .."
+        - "cd staybook && npm ci && cd .."
+        - "cd yakshit-chawla-portfolio && npm ci && cd .."
     build:
       commands:
-        - cd eventpulse && npm run build && cd ..
-        - cd clinic-connect && npm run build && cd ..
-        - cd docushare && npm run build && cd ..
-        - cd skyfare && npm run build && cd ..
-        - cd staybook && npm run build && cd ..
-        - node scripts/stage-remotes.mjs
-        - cd yakshit-chawla-portfolio && npm run build && cd ..
+        - "cd eventpulse && npm run build && cd .."
+        - "cd clinic-connect && npm run build && cd .."
+        - "cd docushare && npm run build && cd .."
+        - "cd skyfare && npm run build && cd .."
+        - "cd staybook && npm run build && cd .."
+        - "node scripts/stage-remotes.mjs"
+        - "cd yakshit-chawla-portfolio && npm run build && cd .."
   artifacts:
     baseDirectory: yakshit-chawla-portfolio/dist/shell-portfolio/browser
     files:

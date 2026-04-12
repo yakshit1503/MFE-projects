@@ -1,7 +1,7 @@
 <section class="portfolio-hero">
   <div class="hero-copy">
     <p class="eyebrow">Full Stack Web Developer | Canada PR</p>
-    <h1>Building enterprise Angular products with sharp UI and MEAN-stack depth.</h1>
+    <h1>Enterprise Angular engineer building practical full-stack products.</h1>
     <p class="intro">
       I’m Yakshit Chawla, a full-stack web developer with 8 years of experience designing scalable applications for
       global clients including Cisco Systems, Fidelity Charitable, and Citibank. I focus on performance, maintainable
@@ -45,6 +45,12 @@
         </svg>
         <span>Download Resume</span>
       </a>
+    </div>
+
+    <div class="hero-proof" aria-label="Portfolio focus areas">
+      @for (item of focusAreas; track item) {
+        <span>{{ item }}</span>
+      }
     </div>
   </div>
 
@@ -94,6 +100,14 @@
 
     <article class="timeline-card">
       <p class="eyebrow">Experience Snapshot</p>
+      <section class="current-build">
+        <h3>What this portfolio demonstrates now</h3>
+        <ul>
+          @for (item of currentBuild; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </section>
       @for (role of roles; track role.company) {
         <div class="role">
           <h3>{{ role.company }}</h3>

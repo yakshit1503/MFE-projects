@@ -40,6 +40,18 @@ export class PortfolioOverviewPageComponent {
     }
   ];
 
+  protected readonly focusAreas = [
+    'Enterprise Angular architecture with standalone components, Signals, RxJS, NgRx, and reusable UI foundations',
+    'Full-stack MEAN delivery across Node.js, Express, NestJS, MongoDB, REST APIs, authentication, and deployment prep',
+    'Product-minded collaboration with UX, backend, QA, and business teams to ship accessible, maintainable workflows'
+  ];
+
+  protected readonly currentBuild = [
+    'Microfrontend portfolio shell with remote-owned project apps rendered through one host URL',
+    'SkyFare flight search and dummy booking flow backed by Express, Mongoose, and MongoDB',
+    'AWS Amplify-ready frontend build pipeline with same-origin remote bundle staging'
+  ];
+
   protected readonly roles = [
     {
       company: 'Synechron Canada Inc.',

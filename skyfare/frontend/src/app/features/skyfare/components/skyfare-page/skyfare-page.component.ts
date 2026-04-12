@@ -1,6 +1,5 @@
-import { Component, ViewEncapsulation, computed, signal } from '@angular/core';
+import { Component, ViewEncapsulation, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ShellSharedStateService } from '../../../../shared/state/shell-shared-state.service';
 
 type FlightResult = {
   id: string;
@@ -24,6 +23,35 @@ type FlightBooking = FlightResult & {
 };
 
 const API_BASE_URL = 'http://localhost:4300/api';
+const MAJOR_AIRPORTS = [
+  { city: 'Toronto', code: 'YYZ', name: 'Toronto Pearson International' },
+  { city: 'Vancouver', code: 'YVR', name: 'Vancouver International' },
+  { city: 'Montreal', code: 'YUL', name: 'Montreal-Trudeau International' },
+  { city: 'Calgary', code: 'YYC', name: 'Calgary International' },
+  { city: 'Ottawa', code: 'YOW', name: 'Ottawa International' },
+  { city: 'New York', code: 'JFK', name: 'John F. Kennedy International' },
+  { city: 'Newark', code: 'EWR', name: 'Newark Liberty International' },
+  { city: 'Chicago', code: 'ORD', name: "Chicago O'Hare International" },
+  { city: 'Los Angeles', code: 'LAX', name: 'Los Angeles International' },
+  { city: 'San Francisco', code: 'SFO', name: 'San Francisco International' },
+  { city: 'Seattle', code: 'SEA', name: 'Seattle-Tacoma International' },
+  { city: 'Miami', code: 'MIA', name: 'Miami International' },
+  { city: 'Dallas', code: 'DFW', name: 'Dallas Fort Worth International' },
+  { city: 'Atlanta', code: 'ATL', name: 'Hartsfield-Jackson Atlanta International' },
+  { city: 'Denver', code: 'DEN', name: 'Denver International' },
+  { city: 'London', code: 'LHR', name: 'Heathrow' },
+  { city: 'Paris', code: 'CDG', name: 'Charles de Gaulle' },
+  { city: 'Amsterdam', code: 'AMS', name: 'Amsterdam Schiphol' },
+  { city: 'Frankfurt', code: 'FRA', name: 'Frankfurt Airport' },
+  { city: 'Dubai', code: 'DXB', name: 'Dubai International' },
+  { city: 'Doha', code: 'DOH', name: 'Hamad International' },
+  { city: 'Delhi', code: 'DEL', name: 'Indira Gandhi International' },
+  { city: 'Mumbai', code: 'BOM', name: 'Chhatrapati Shivaji Maharaj International' },
+  { city: 'Singapore', code: 'SIN', name: 'Singapore Changi' },
+  { city: 'Tokyo', code: 'HND', name: 'Tokyo Haneda' },
+  { city: 'Hong Kong', code: 'HKG', name: 'Hong Kong International' },
+  { city: 'Sydney', code: 'SYD', name: 'Sydney Kingsford Smith' }
+] as const;
 
 @Component({
   selector: 'app-skyfare-page',
@@ -33,25 +61,19 @@ const API_BASE_URL = 'http://localhost:4300/api';
   encapsulation: ViewEncapsulation.ShadowDom
 })
 export class SkyfarePageComponent {
-  protected readonly hostState;
-  protected readonly summary;
   protected origin = 'Toronto';
   protected destination = 'Vancouver';
+  protected readonly airports = MAJOR_AIRPORTS;
   protected departureDate = new Date().toISOString().slice(0, 10);
   protected passengers = 1;
   protected passengerName = 'Yakshit Chawla';
   protected readonly results = signal<FlightResult[]>([]);
   protected readonly latestBooking = signal<FlightBooking | null>(null);
+  protected readonly selectedFlight = signal<FlightResult | null>(null);
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal('');
 
-  constructor(shellSharedStateService: ShellSharedStateService) {
-    this.hostState = shellSharedStateService.state;
-    this.summary = computed(
-      () =>
-        `${this.hostState().userName} is targeting ${this.hostState().audience} travel demand in ${this.hostState().city} for ${this.hostState().timeframe}.`
-    );
-
+  constructor() {
     void this.searchFlights();
   }
 
@@ -81,7 +103,29 @@ export class SkyfarePageComponent {
     }
   }
 
-  protected async bookFlight(flight: FlightResult): Promise<void> {
+  protected openBooking(flight: FlightResult): void {
+    this.selectedFlight.set(flight);
+    this.latestBooking.set(null);
+    this.errorMessage.set('');
+  }
+
+  protected closeBooking(): void {
+    if (this.isLoading()) {
+      return;
+    }
+
+    this.selectedFlight.set(null);
+    this.latestBooking.set(null);
+    this.errorMessage.set('');
+  }
+
+  protected async confirmBooking(): Promise<void> {
+    const flight = this.selectedFlight();
+
+    if (!flight) {
+      return;
+    }
+
     this.isLoading.set(true);
     this.errorMessage.set('');
 

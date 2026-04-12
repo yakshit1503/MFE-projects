@@ -17,7 +17,8 @@ export class ShellSharedStateService {
     audience: 'Recruiters',
     timeframe: 'This week',
     userName: 'Yakshit Chawla',
-    message: 'Waiting for shell data.'
+    message: 'Waiting for shell data.',
+    theme: 'dark'
   });
 
   constructor() {
