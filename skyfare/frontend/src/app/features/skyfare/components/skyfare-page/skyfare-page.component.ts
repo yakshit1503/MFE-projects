@@ -32,7 +32,25 @@ type AirportOption = {
   hierarchy: string;
 };
 
-const API_BASE_URL = 'http://localhost:4300/api';
+const API_BASE_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:4300/api'
+    : `${window.location.origin}/api`;
+
+const localAirportOptions: AirportOption[] = [
+  { entityId: 'local-yyz', iataCode: 'YYZ', name: 'Toronto Pearson International', cityName: 'Toronto', countryName: 'Canada', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Toronto, Ontario, Canada' },
+  { entityId: 'local-yvr', iataCode: 'YVR', name: 'Vancouver International', cityName: 'Vancouver', countryName: 'Canada', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Vancouver, British Columbia, Canada' },
+  { entityId: 'local-yul', iataCode: 'YUL', name: 'Montreal-Trudeau International', cityName: 'Montreal', countryName: 'Canada', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Montreal, Quebec, Canada' },
+  { entityId: 'local-yyc', iataCode: 'YYC', name: 'Calgary International', cityName: 'Calgary', countryName: 'Canada', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Calgary, Alberta, Canada' },
+  { entityId: 'local-yow', iataCode: 'YOW', name: 'Ottawa International', cityName: 'Ottawa', countryName: 'Canada', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Ottawa, Ontario, Canada' },
+  { entityId: 'local-jfk', iataCode: 'JFK', name: 'John F. Kennedy International', cityName: 'New York', countryName: 'United States', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'New York, United States' },
+  { entityId: 'local-lax', iataCode: 'LAX', name: 'Los Angeles International', cityName: 'Los Angeles', countryName: 'United States', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Los Angeles, California, United States' },
+  { entityId: 'local-lhr', iataCode: 'LHR', name: 'Heathrow', cityName: 'London', countryName: 'United Kingdom', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'London, United Kingdom' },
+  { entityId: 'local-cdg', iataCode: 'CDG', name: 'Charles de Gaulle', cityName: 'Paris', countryName: 'France', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Paris, France' },
+  { entityId: 'local-dxb', iataCode: 'DXB', name: 'Dubai International', cityName: 'Dubai', countryName: 'United Arab Emirates', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Dubai, United Arab Emirates' },
+  { entityId: 'local-del', iataCode: 'DEL', name: 'Indira Gandhi International', cityName: 'Delhi', countryName: 'India', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Delhi, India' },
+  { entityId: 'local-bom', iataCode: 'BOM', name: 'Chhatrapati Shivaji Maharaj International', cityName: 'Mumbai', countryName: 'India', type: 'PLACE_TYPE_AIRPORT', hierarchy: 'Mumbai, India' }
+];
 
 @Component({
   selector: 'app-skyfare-page',
@@ -194,8 +212,8 @@ export class SkyfarePageComponent {
     const normalizedQuery = query.trim();
 
     if (normalizedQuery.length < 2) {
-      this.setAirportSuggestions(field, []);
-      this.setAirportLookupMessage(field, 'Type at least 2 characters to search Skyscanner places.');
+      this.setAirportSuggestions(field, this.searchLocalAirports(normalizedQuery));
+      this.setAirportLookupMessage(field, 'Type at least 2 characters to narrow the airport list.');
       return;
     }
 
@@ -219,9 +237,30 @@ export class SkyfarePageComponent {
         data.places.length ? '' : data.message ?? 'No Skyscanner places found. Try a city or airport code.'
       );
     } catch {
-      this.setAirportSuggestions(field, []);
-      this.setAirportLookupMessage(field, 'Skyscanner lookup is unavailable. Add SKYSCANNER_API_KEY in the SkyFare backend .env.');
+      const fallbackPlaces = this.searchLocalAirports(normalizedQuery);
+
+      this.setAirportSuggestions(field, fallbackPlaces);
+      this.setAirportLookupMessage(
+        field,
+        fallbackPlaces.length
+          ? ''
+          : 'Airport lookup is temporarily unavailable. Try a city name like Toronto, Vancouver, London, or Delhi.'
+      );
     }
+  }
+
+  private searchLocalAirports(query: string): AirportOption[] {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return localAirportOptions.slice(0, 8);
+    }
+
+    return localAirportOptions
+      .filter((airport) =>
+        `${airport.cityName} ${airport.iataCode} ${airport.name} ${airport.countryName}`.toLowerCase().includes(normalizedQuery)
+      )
+      .slice(0, 8);
   }
 
   private setAirportSuggestions(field: 'origin' | 'destination', places: AirportOption[]): void {
