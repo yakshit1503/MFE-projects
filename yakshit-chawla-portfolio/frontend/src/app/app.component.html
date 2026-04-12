@@ -2,15 +2,23 @@
   <header class="topbar">
     <a class="brand" routerLink="/">Yakshit Chawla</a>
     <nav aria-label="Primary navigation">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-      <a [routerLink]="projectsLink()" routerLinkActive="active">Projects</a>
+      <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a mat-button [routerLink]="projectsLink()" routerLinkActive="active">Projects</a>
     </nav>
     <div class="session-area">
+      <mat-slide-toggle
+        class="theme-toggle"
+        aria-label="Theme"
+        [checked]="theme() === 'dark'"
+        (change)="setTheme($event.checked ? 'dark' : 'light')"
+      >
+        {{ theme() === 'dark' ? 'Dark' : 'Light' }}
+      </mat-slide-toggle>
       @if (session(); as activeSession) {
         <span>{{ activeSession.label }}</span>
-        <button type="button" (click)="logout()">Logout</button>
+        <button mat-flat-button type="button" (click)="logout()">Logout</button>
       } @else {
-        <a routerLink="/projects">Login</a>
+        <a mat-flat-button routerLink="/projects">Login</a>
       }
     </div>
   </header>

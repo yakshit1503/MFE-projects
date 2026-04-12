@@ -8,31 +8,31 @@ export const PROJECTS: ProjectAccess[] = [
     key: 'eventpulse',
     name: 'EventPulse',
     route: '/projects/eventpulse',
-    description: 'Events and ticketing microfrontend'
+    description: 'Event discovery, ticketing flows, and organizer-ready experience design'
   },
   {
     key: 'clinic-connect',
     name: 'Clinic Connect',
     route: '/projects/clinic-connect',
-    description: 'Clinic booking and patient intake microfrontend'
+    description: 'Patient intake, appointment booking, and clinic workflow screens'
   },
   {
     key: 'docushare',
     name: 'DocuShare',
     route: '/projects/docushare',
-    description: 'Document upload and approval microfrontend'
+    description: 'Document upload, review queues, and approval-focused collaboration'
   },
   {
     key: 'skyfare',
     name: 'SkyFare',
     route: '/projects/skyfare',
-    description: 'Flight booking and fare insights microfrontend'
+    description: 'Flight search, booking journeys, and fare insight interactions'
   },
   {
     key: 'staybook',
     name: 'StayBook',
     route: '/projects/staybook',
-    description: 'Hotel reservation and stay discovery microfrontend'
+    description: 'Hotel discovery, reservation flows, and stay planning screens'
   }
 ];
 

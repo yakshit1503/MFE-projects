@@ -1,61 +1,85 @@
 :host {
   display: block;
+  font-family: "Bahnschrift", "Aptos", "Trebuchet MS", sans-serif;
 }
 
 .remote-page {
-  padding: 2rem;
-  border-radius: 1.5rem;
-  background: linear-gradient(180deg, #fff7ed 0%, #fed7aa 100%);
-  border: 1px solid rgba(234, 88, 12, 0.14);
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1.2rem, 4vw, 2.5rem);
+  border: 1px solid rgba(194, 65, 12, 0.22);
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(251, 146, 60, 0.34), transparent 18rem),
+    linear-gradient(145deg, #fff7ed 0%, #ffedd5 56%, #fed7aa 100%);
+  color: #431407;
+  box-shadow: 0 24px 70px rgba(154, 52, 18, 0.16);
 }
 
 .badge {
-  display: inline-flex;
-  padding: 0.35rem 0.75rem;
+  justify-self: start;
+  padding: 0.45rem 0.75rem;
   border-radius: 999px;
   background: #c2410c;
-  color: white;
-  font-size: 0.8rem;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
-.intro {
-  max-width: 40rem;
-  line-height: 1.6;
+h2 {
+  margin: 0;
+  color: #431407;
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  letter-spacing: -0.06em;
+  line-height: 0.95;
 }
 
-.host-state {
-  margin-top: 1.25rem;
-  padding: 1rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.82);
+.intro,
+.host-state p,
+article p,
+dd {
+  color: #7c2d12;
+  line-height: 1.65;
+}
+
+.host-state,
+.grid article {
+  padding: 1.2rem;
+  border: 1px solid rgba(194, 65, 12, 0.14);
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 16px 40px rgba(154, 52, 18, 0.1);
+}
+
+.host-state dl,
+.grid {
+  display: grid;
+  gap: 0.9rem;
 }
 
 .host-state dl {
-  display: grid;
-  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 1rem 0 0;
 }
 
-.host-state dt {
-  font-weight: 700;
-}
-
-.host-state dd {
-  margin: 0.2rem 0 0;
-  color: #9a3412;
-}
-
 .grid {
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
 }
 
-article {
-  padding: 1rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.78);
+dt,
+h3 {
+  color: #c2410c;
+  font-weight: 900;
+}
+
+dd {
+  margin: 0.25rem 0 0;
+}
+
+@media (max-width: 640px) {
+  .host-state dl {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,31 +1,100 @@
-<section class="remote-page">
-  <div class="badge">Remote App</div>
-  <h2>SkyFare</h2>
-  <p class="intro">Flight search, fare trends, and route insights live in this remote and surface inside the portfolio shell.</p>
+<section class="skyfare-page">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">SkyFare</p>
+      <h2>Find a smarter flight in seconds.</h2>
+      <p class="intro">
+        A Skyscanner-inspired flight demo owned by the SkyFare remote. Search results and dummy bookings render inside
+        the portfolio shell, while booking writes go to SkyFare MongoDB.
+      </p>
+    </div>
 
-  <article class="host-state">
-    <h3>Host Shared Data</h3>
-    <p>{{ summary() }}</p>
-    <dl>
-      <div>
-        <dt>Source</dt>
-        <dd>{{ hostState().activeApp }}</dd>
-      </div>
-      <div>
-        <dt>Message</dt>
-        <dd>{{ hostState().message }}</dd>
-      </div>
-    </dl>
-  </article>
+    <aside class="shell-card">
+      <span>Host context</span>
+      <p>{{ summary() }}</p>
+    </aside>
+  </div>
 
-  <div class="grid">
-    <article>
-      <h3>Routes</h3>
-      <p>Toronto, Vancouver, New York, and Dubai are showing strong travel intent for the next cycle.</p>
+  <form class="search-panel" (ngSubmit)="searchFlights()">
+    <label>
+      <span>From</span>
+      <input name="origin" [(ngModel)]="origin" autocomplete="off" />
+    </label>
+    <label>
+      <span>To</span>
+      <input name="destination" [(ngModel)]="destination" autocomplete="off" />
+    </label>
+    <label>
+      <span>Depart</span>
+      <input name="departureDate" type="date" [(ngModel)]="departureDate" />
+    </label>
+    <label>
+      <span>Passengers</span>
+      <input name="passengers" type="number" min="1" max="9" [(ngModel)]="passengers" />
+    </label>
+    <label>
+      <span>Passenger name</span>
+      <input name="passengerName" [(ngModel)]="passengerName" autocomplete="name" />
+    </label>
+    <button type="submit" [disabled]="isLoading()">
+      {{ isLoading() ? 'Searching...' : 'Search flights' }}
+    </button>
+  </form>
+
+  @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+  }
+
+  @if (latestBooking(); as booking) {
+    <article class="booking-banner">
+      <span>Booking confirmed</span>
+      <strong>{{ booking.bookingReference }}</strong>
+      <p>{{ booking.passengerName }} is booked on {{ booking.airline }} from {{ booking.origin }} to {{ booking.destination }}.</p>
     </article>
-    <article>
-      <h3>Fare Pulse</h3>
-      <p>Weekend departures are trending higher, while midweek connections remain competitively priced.</p>
-    </article>
+  }
+
+  <div class="content-grid">
+    <section class="results">
+      <div class="section-heading">
+        <p class="eyebrow">Best flight options</p>
+        <h3>{{ origin }} to {{ destination }}</h3>
+      </div>
+
+      @for (flight of results(); track flight.id) {
+        <article class="flight-card">
+          <div class="flight-score">{{ flight.score }}</div>
+          <div>
+            <strong>{{ flight.departureTime }}</strong>
+            <span>{{ flight.origin }}</span>
+          </div>
+          <div class="route-line" aria-hidden="true">
+            <span></span>
+          </div>
+          <div>
+            <strong>{{ flight.arrivalTime }}</strong>
+            <span>{{ flight.destination }}</span>
+          </div>
+          <div>
+            <strong>{{ flight.airline }}</strong>
+            <span>{{ flight.duration }} · {{ flight.stops }}</span>
+          </div>
+          <div class="price-block">
+            <strong>${{ flight.price }}</strong>
+            <span>total</span>
+          </div>
+          <button type="button" (click)="bookFlight(flight)" [disabled]="isLoading()">Book</button>
+        </article>
+      }
+    </section>
+
+    <aside class="insights">
+      <p class="eyebrow">Trip intelligence</p>
+      <h3>Why this feels like a travel product</h3>
+      <ul>
+        <li>Search state lives in SkyFare, not the shell.</li>
+        <li>Bookings post to the SkyFare backend and persist in MongoDB.</li>
+        <li>The UI stays inside localhost:4200 through the portfolio host.</li>
+      </ul>
+    </aside>
   </div>
 </section>

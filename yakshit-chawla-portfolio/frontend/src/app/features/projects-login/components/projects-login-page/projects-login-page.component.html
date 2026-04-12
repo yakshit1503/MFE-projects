@@ -1,34 +1,39 @@
 <section class="login-shell">
-  <div class="login-card">
-    <p class="eyebrow">Protected Projects</p>
-    <h1>Login to view microfrontend projects</h1>
-    <p class="lede">
-      Admin can access every remote app. Project users can only open their assigned remote through the shell.
-    </p>
+  <mat-card class="login-card">
+    <mat-card-content>
+      <p class="eyebrow">Project Studio</p>
+      <h1>Sign in to explore Yakshit’s product demos</h1>
+      <p class="lede">
+        Use an admin profile to browse every demo, or choose an app profile to jump straight into that product
+        experience.
+      </p>
 
-    <form (ngSubmit)="login()" class="login-form">
-      <label>
-        <span>Username</span>
-        <input name="username" [(ngModel)]="username" autocomplete="username" />
-      </label>
-      <label>
-        <span>Password</span>
-        <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" />
-      </label>
-      @if (errorMessage) {
-        <p class="error">{{ errorMessage }}</p>
-      }
-      <button type="submit">Enter Projects</button>
-    </form>
-  </div>
+      <form (ngSubmit)="login()" class="login-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput name="username" [(ngModel)]="username" autocomplete="username" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput name="password" type="password" [(ngModel)]="password" autocomplete="current-password" />
+        </mat-form-field>
+        @if (errorMessage) {
+          <p class="error">{{ errorMessage }}</p>
+        }
+        <button mat-flat-button type="submit">Launch Studio</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
 
-  <aside class="credential-rail" aria-label="Demo login credentials">
-    <p class="eyebrow">Demo Credentials</p>
-    <h2>Access Matrix</h2>
+  <mat-card class="credential-rail" aria-label="Demo login credentials">
+    <mat-card-content>
+      <p class="eyebrow">Quick Sign-In</p>
+      <h2>Choose a demo profile</h2>
     @for (credential of credentials; track credential.username) {
-      <article
-        role="button"
-        tabindex="0"
+      <button
+        mat-stroked-button
+        class="credential-option"
+        type="button"
         (click)="fillCredential(credential.username, credential.password)"
         (keydown.enter)="fillCredential(credential.username, credential.password)"
         (keydown.space)="fillCredential(credential.username, credential.password)"
@@ -37,7 +42,8 @@
         <span>Username: {{ credential.username }}</span>
         <span>Password: {{ credential.password }}</span>
         <small>Access: {{ credential.access === 'all' ? 'All apps' : credential.access.join(', ') }}</small>
-      </article>
+      </button>
     }
-  </aside>
+    </mat-card-content>
+  </mat-card>
 </section>

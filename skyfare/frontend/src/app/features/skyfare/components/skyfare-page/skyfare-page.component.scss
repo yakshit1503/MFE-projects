@@ -1,61 +1,261 @@
 :host {
   display: block;
+  color: #071a2f;
+  font-family: "Bahnschrift", "Aptos", "Trebuchet MS", sans-serif;
 }
 
-.remote-page {
-  padding: 2rem;
-  border-radius: 1.5rem;
-  background: linear-gradient(180deg, #ecfeff 0%, #cffafe 100%);
-  border: 1px solid rgba(8, 145, 178, 0.14);
+.skyfare-page {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(76, 201, 240, 0.36), transparent 20rem),
+    linear-gradient(145deg, #061b3a 0%, #06366a 42%, #00a6d6 100%);
+  box-shadow: 0 28px 80px rgba(3, 18, 43, 0.28);
 }
 
-.badge {
-  display: inline-flex;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  background: #0f766e;
-  color: white;
-  font-size: 0.8rem;
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+  gap: 1rem;
+  align-items: end;
+  color: #ffffff;
+}
+
+.eyebrow {
+  margin: 0 0 0.55rem;
+  color: #95f3ff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+}
+
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h2 {
+  max-width: 46rem;
+  margin-bottom: 1rem;
+  font-size: clamp(2.3rem, 6vw, 5.4rem);
+  letter-spacing: -0.07em;
+  line-height: 0.9;
 }
 
 .intro {
-  max-width: 40rem;
+  max-width: 46rem;
+  color: #dff8ff;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.shell-card,
+.search-panel,
+.booking-banner,
+.results,
+.insights {
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 48px rgba(3, 18, 43, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.shell-card {
+  padding: 1rem;
+  border-radius: 1.5rem;
+  color: #0b355d;
+}
+
+.shell-card span,
+.booking-banner span {
+  color: #0369a1;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.search-panel {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
+  gap: 0.75rem;
+  align-items: end;
+  padding: 1rem;
+  border-radius: 1.6rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  color: #164e63;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+input {
+  width: 100%;
+  min-height: 3.2rem;
+  border: 1px solid #c7e7f2;
+  border-radius: 1rem;
+  padding: 0 0.9rem;
+  background: #f8fdff;
+  color: #082f49;
+  font: inherit;
+  font-weight: 800;
+}
+
+input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.16);
+  outline: 0;
+}
+
+button {
+  min-height: 3.2rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 1.25rem;
+  background: #05203c;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.error {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 900;
+}
+
+.booking-banner {
+  padding: 1rem;
+  border-radius: 1.35rem;
+}
+
+.booking-banner strong {
+  display: block;
+  margin-top: 0.25rem;
+  color: #05203c;
+  font-size: 1.5rem;
+}
+
+.booking-banner p {
+  margin-bottom: 0;
+  color: #155e75;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.34fr);
+  gap: 1rem;
+}
+
+.results,
+.insights {
+  padding: 1rem;
+  border-radius: 1.6rem;
+}
+
+.section-heading h3,
+.insights h3 {
+  color: #05203c;
+  font-size: clamp(1.55rem, 3vw, 2.6rem);
+  letter-spacing: -0.04em;
+}
+
+.flight-card {
+  display: grid;
+  grid-template-columns: auto minmax(5rem, 0.75fr) minmax(3rem, 0.35fr) minmax(5rem, 0.75fr) minmax(8rem, 1fr) auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding: 0.95rem;
+  border: 1px solid #d7edf5;
+  border-radius: 1.25rem;
+  background: #ffffff;
+}
+
+.flight-score {
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.flight-card strong {
+  display: block;
+  color: #05203c;
+  font-size: 1.08rem;
+}
+
+.flight-card span,
+.insights li {
+  color: #4b6b7c;
   line-height: 1.6;
 }
 
-.host-state {
-  margin-top: 1.25rem;
-  padding: 1rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.82);
+.route-line {
+  height: 2px;
+  background: #9bd8ec;
 }
 
-.host-state dl {
+.price-block {
+  text-align: right;
+}
+
+.price-block strong {
+  font-size: 1.45rem;
+}
+
+.insights ul {
   display: grid;
   gap: 0.75rem;
   margin: 1rem 0 0;
+  padding-left: 1.1rem;
 }
 
-.host-state dt {
-  font-weight: 700;
+@media (max-width: 1040px) {
+  .search-panel,
+  .hero,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .route-line {
+    display: none;
+  }
 }
 
-.host-state dd {
-  margin: 0.2rem 0 0;
-  color: #0f766e;
-}
+@media (max-width: 560px) {
+  .skyfare-page {
+    border-radius: 1.25rem;
+  }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
+  .flight-card {
+    grid-template-columns: 1fr;
+  }
 
-article {
-  padding: 1rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.78);
+  .price-block {
+    text-align: left;
+  }
 }

@@ -5,10 +5,7 @@
 .portfolio-shell {
   min-height: 100vh;
   padding: 1.25rem;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(217, 119, 6, 0.28), transparent 28rem),
-    radial-gradient(circle at 90% 8%, rgba(15, 118, 110, 0.18), transparent 26rem),
-    linear-gradient(135deg, #fff7ed 0%, #f5efe6 44%, #e7dfd2 100%);
+  background: var(--app-shell-bg);
 }
 
 .topbar {
@@ -19,24 +16,26 @@
   max-width: 78rem;
   margin: 0 auto 1.25rem;
   padding: 0.85rem 1rem;
-  border: 1px solid rgba(74, 42, 23, 0.14);
+  border: 1px solid var(--app-topbar-line);
   border-radius: 999px;
-  background: rgba(255, 250, 240, 0.78);
+  background: var(--app-topbar-bg);
   backdrop-filter: blur(18px);
-  box-shadow: 0 20px 60px rgba(74, 42, 23, 0.12);
+  box-shadow: 0 24px 70px var(--app-topbar-shadow);
 }
 
 .brand,
-.topbar a,
-.topbar button {
+.topbar nav > a,
+.session-area > a,
+.session-area > button {
   text-decoration: none;
-  color: #3f2a1d;
+  color: var(--app-nav-text);
   font-weight: 800;
 }
 
 .brand {
   letter-spacing: -0.03em;
   font-size: 1.1rem;
+  color: var(--app-brand-text);
 }
 
 .topbar nav,
@@ -46,26 +45,56 @@
   gap: 0.55rem;
 }
 
-.topbar nav a,
-.session-area a,
-.session-area button {
-  border: 0;
+.topbar nav > a,
+.session-area > a,
+.session-area > button {
   border-radius: 999px;
   padding: 0.7rem 0.95rem;
-  background: transparent;
   cursor: pointer;
   font: inherit;
 }
 
-.topbar nav a.active,
-.session-area a,
-.session-area button {
-  background: #2d1d12;
-  color: #fffaf0;
+.topbar nav > a.active,
+.session-area > a,
+.session-area > button {
+  background: var(--app-accent-gradient);
+  color: var(--app-accent-contrast);
+}
+
+.theme-toggle {
+  --mdc-switch-selected-focus-handle-color: var(--app-accent-2);
+  --mdc-switch-selected-hover-handle-color: var(--app-accent-2);
+  --mdc-switch-selected-pressed-handle-color: var(--app-accent-2);
+  --mdc-switch-selected-handle-color: var(--app-accent-2);
+  --mdc-switch-selected-focus-track-color: var(--app-accent);
+  --mdc-switch-selected-hover-track-color: var(--app-accent);
+  --mdc-switch-selected-pressed-track-color: var(--app-accent);
+  --mdc-switch-selected-track-color: var(--app-accent);
+  --mdc-switch-unselected-focus-handle-color: var(--app-accent);
+  --mdc-switch-unselected-hover-handle-color: var(--app-accent);
+  --mdc-switch-unselected-pressed-handle-color: var(--app-accent);
+  --mdc-switch-unselected-handle-color: var(--app-accent);
+  --mdc-switch-unselected-focus-track-color: var(--app-button-soft-bg);
+  --mdc-switch-unselected-hover-track-color: var(--app-button-soft-bg);
+  --mdc-switch-unselected-pressed-track-color: var(--app-button-soft-bg);
+  --mdc-switch-unselected-track-color: var(--app-button-soft-bg);
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--app-topbar-line);
+  border-radius: 999px;
+  background: var(--app-button-soft-bg);
+  color: var(--app-nav-text);
+  font-weight: 800;
+}
+
+.topbar nav > a:focus-visible,
+.session-area > a:focus-visible,
+.session-area > button:focus-visible {
+  outline: 3px solid var(--app-focus-ring);
+  outline-offset: 2px;
 }
 
 .session-area span {
-  color: #7c4a21;
+  color: var(--app-accent-2);
   font-weight: 800;
 }
 

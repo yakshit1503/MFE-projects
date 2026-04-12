@@ -1,7 +1,7 @@
 {
-  "eventbrite-clone": "http://localhost:4201/remoteEntry.json",
-  "appointment-booking": "http://localhost:4202/remoteEntry.json",
-  "document-upload": "http://localhost:4203/remoteEntry.json",
-  "flight-booking": "http://localhost:4204/remoteEntry.json",
-  "hotel-reservation": "http://localhost:4205/remoteEntry.json"
+  "eventbrite-clone": "/remotes/eventpulse/remoteEntry.json",
+  "appointment-booking": "/remotes/clinic-connect/remoteEntry.json",
+  "document-upload": "/remotes/docushare/remoteEntry.json",
+  "flight-booking": "/remotes/skyfare/remoteEntry.json",
+  "hotel-reservation": "/remotes/staybook/remoteEntry.json"
 }
