@@ -4,7 +4,7 @@ module.exports = withNativeFederation({
   name: 'flight-booking',
 
   exposes: {
-    './Component': './src/app/app.ts',
+    './Component': './frontend/src/app/app.component.ts',
   },
 
   shared: {
@@ -26,6 +26,9 @@ module.exports = withNativeFederation({
     // New feature for more performance and avoiding
     // issues with node libs. Comment this out to
     // get the traditional behavior:
-    ignoreUnusedDeps: true,
+    ignoreUnusedDeps: false,
   },
 });
+
+
+

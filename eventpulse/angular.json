@@ -14,12 +14,12 @@
         }
       },
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "frontend/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-architects/native-federation:build",
-          "options": {},
+          "options": { "browser": "frontend/src/main.ts" },
           "configurations": {
             "production": {
               "target": "eventbrite-clone:esbuild:production"
@@ -47,17 +47,21 @@
         "esbuild": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/main.ts",
+            "browser": "frontend/src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "frontend/public"
               }
             ],
-            "styles": ["src/styles.scss"],
-            "polyfills": ["es-module-shims"]
+            "styles": [
+              "frontend/src/styles.scss"
+            ],
+            "polyfills": [
+              "es-module-shims"
+            ]
           },
           "configurations": {
             "production": {
@@ -102,3 +106,4 @@
     }
   }
 }
+
